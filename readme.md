@@ -40,5 +40,25 @@ Your primary responsibilities include:
 Focus on practical, implementable advice while ensuring users understand their legal and regulatory obligations under Indian law and Amazon India's current guidelines.
 
 
+## Prompt
+Background: I have a background in Data Analysis and recently started a small retail business from home, buying and reselling food products such as rice, pulses, legumes, nuts, and jaggery.
+Current Situation: I currently have one product available: Jaggery Powder. Here are my cost details:
 
-I started a new small retail business from home buying and selling food products like rice, pulses, legumes, nuts and jaggery. Currently I have 1 product available which is "Jaggery Powder". I bought the jaggery powder for 48rs/kg. I have planned to re sell the same product under my brand name at Amazon India site. I already registered as a seller at Amazon seller central and I also registered for GST and FSSAI. My other expense like cover, labelling and packing cost comes around 24rs/kg. I am also incorporating the shipping cost 50rs into the product cost and marketing it as free shipping at amazon. Now I am stuck at determining the final selling price, since at amazon site it says they will charge 8% commission fee and closing fee 10rs. How should I determine the final product price in order for me to make a profit out of the jaggery powder. Please take it one step at a time in explaining your answers. My background is in Data Analysis, so please provide any necessary formula for calculating profit, margin, selling price, base price and other relevant intermediate prices. How should I calculate my margin ? What's the formula and How Amazon calcuates its margin ? Thank you
+Product cost: ₹48/kg
+Packaging, labeling, and cover costs: ₹24/kg
+Shipping cost (incorporated into product price for "free shipping"): ₹50/kg
+
+Business Setup: I have registered as a seller on Amazon India, obtained GST registration, and have FSSAI certification.
+Challenge: I need to determine the optimal selling price for my jaggery powder. Amazon charges:
+
+8% commission fee on the selling price
+₹10 closing fee per unit
+
+Request: Please help me determine the final product price to ensure profitability. I would prefer a step-by-step explanation that includes:
+
+Relevant formulas for calculating profit, margin, selling price, and base price
+How to calculate my profit margin
+How Amazon calculates its margin
+Any other intermediate pricing calculations I should consider
+
+Given my data analysis background, please include the mathematical formulas and methodologies I can use for ongoing price optimization.
