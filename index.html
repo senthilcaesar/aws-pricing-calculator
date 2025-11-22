@@ -1,40 +1,999 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AWS Pricing Calculator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px;
-      background: #f8f9fa;
-    }
-    h1 {
-      margin-bottom: 40px;
-    }
-    .btn {
-      display: inline-block;
-      margin: 20px;
-      padding: 15px 30px;
-      font-size: 18px;
-      color: white;
-      background: #0073bb;
-      text-decoration: none;
-      border-radius: 8px;
-      transition: background 0.3s;
-    }
-    .btn:hover {
-      background: #005a91;
-    }
-  </style>
-</head>
-<body>
-  <h1>AWS Pricing Calculator</h1>
-  <p>Select a calculator:</p>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>GST & Pricing Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #333;
+        --primary-dark: #000;
+        --primary-light: #555;
+        --secondary: #555;
+        --accent: #777;
+        --bg-gradient-start: #f4f4f4;
+        --bg-gradient-end: #f4f4f4;
+        --card-bg: #ffffff;
+        --text-primary: #212121;
+        --main-heading-color: #e65100; /* Dark Orange */
+        --text-secondary: #757575;
+        --text-muted: #9e9e9e;
+        --border-color: #e0e0e0;
+        --input-bg: #f9fafb;
+        --result-bg: linear-gradient(135deg, #333 0%, #555 100%);
+        --heading-color: navy;
+        --success-bg: #e0e0e0;
+        --success-text: #212121;
+      }
 
-  <a href="page1.html" class="btn" target="_blank">Calculator 1</a>
-  <a href="page2.html" class="btn" target="_blank">Calculator 2</a>
-</body>
+      body.dark-mode {
+        --primary: #000080; /* Dark Navy Blue */
+        --primary-dark: #fff;
+        --primary-light: #eee;
+        --secondary: #bbb;
+        --accent: #999;
+        --bg-gradient-start: #121212;
+        --bg-gradient-end: #121212;
+        --card-bg: #1e1e1e;
+        --text-primary: #f5f5f5;
+        --main-heading-color: #fb8c00; /* Lighter Orange for dark mode */
+        --text-secondary: #bdbdbd;
+        --text-muted: #9e9e9e;
+        --border-color: #424242;
+        --input-bg: #333;
+        --success-bg: #424242;
+        --heading-color: #87cefa; /* LightSkyBlue */
+      }
+
+      body.dark-mode button.secondary {
+        background: var(--primary);
+        color: white;
+        --success-text: #f5f5f5;
+      }
+
+      body.dark-mode footer {
+        color: var(--primary);
+      }
+
+      .dark-mode input[type="number"]:focus,
+      .dark-mode input[type="text"]:focus {
+        background: #1e293b;
+        box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.2);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(
+          135deg,
+          var(--bg-gradient-start) 0%,
+          var(--bg-gradient-end) 100%
+        );
+        background-attachment: fixed;
+        color: var(--text-primary);
+        margin: 0;
+        padding: 32px 24px;
+        min-height: 100vh;
+      }
+
+      .wrap {
+        max-width: 1280px;
+        margin: 0 auto;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 32px;
+        animation: fadeInDown 0.6s ease-out;
+      }
+
+      h1 {
+        margin: 0 0 8px 0;
+        font-size: 32px;
+        font-weight: 700;
+        font-family: "Montserrat", sans-serif;
+        background: var(--main-heading-color);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.5px;
+      }
+
+      .subtitle {
+        color: var(--text-secondary);
+        font-size: 16px;
+        font-weight: 400;
+      }
+
+      .theme-toggle-btn {
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        background: var(--card-bg);
+        border: 2px solid var(--border-color);
+        color: var(--text-secondary);
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .theme-toggle-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .dark-mode .theme-toggle-btn:hover {
+        box-shadow: 0 6px 15px rgba(255, 255, 255, 0.1);
+      }
+
+      .card {
+        background: var(--card-bg);
+        border-radius: 24px;
+        box-shadow: 0 20px 50px rgba(16, 185, 129, 0.15),
+          0 10px 20px rgba(0, 0, 0, 0.04);
+        padding: 18px;
+        animation: fadeInUp 0.6s ease-out;
+        position: center;
+        overflow: hidden;
+      }
+
+      .main-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+        align-items: baseline;
+      }
+
+      .left-section {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .right-section {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        position: sticky;
+        top: 1px;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: var(--primary);
+      }
+
+      .main-section-title {
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        margin: 0 0 24px 0;
+        min-height: 54px;
+        font-family: "Montserrat", sans-serif;
+        line-height: 1.2;
+      }
+
+      .section-title {
+        color: var(--text-primary);
+        margin: 0;
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        min-height: 54px;
+        font-family: "Montserrat", sans-serif;
+        /* Enhanced alignment properties */
+        text-align: left;
+        line-height: 1.2;
+        position: relative;
+      }
+
+      .section-title::before {
+        content: "";
+        font-size: 22px;
+        width: 28px;
+        display: inline-block;
+        flex-shrink: 0;
+      }
+
+      .left-section .section-title {
+        color: var(--primary) !important;
+      }
+
+      .right-section .section-title {
+        color: var(--secondary) !important;
+      }
+
+      .right-section .section-title::before {
+        content: "";
+      }
+
+      /* Ensure both sections have the same height and alignment */
+      .left-section,
+      .right-section {
+        height: auto;
+        align-self: start;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .input-group {
+        position: relative;
+      }
+
+      label {
+        display: block;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+        transition: color 0.2s;
+      }
+
+      input[type="number"],
+      input[type="text"] {
+        width: 100%;
+        padding: 12px 14px;
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        font-size: 15px;
+        background: var(--input-bg);
+        color: var(--text-primary);
+        transition: all 0.3s ease;
+        font-weight: 400;
+      }
+
+      input[type="number"]:focus,
+      input[type="text"]:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: var(--card-bg);
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        transform: translateY(-1px);
+      }
+
+      input[type="number"]:hover,
+      input[type="text"]:hover {
+        border-color: var(--primary);
+      }
+
+      .results {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .result-box {
+        background: var(--input-bg);
+        padding: 20px;
+        border-radius: 16px;
+        border: 2px solid var(--border-color);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .result-box::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--primary);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .result-box:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.15);
+        border-color: var(--primary);
+      }
+
+      .result-box:hover::before {
+        opacity: 1;
+      }
+
+      .result-label {
+        color: var(--text-muted);
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+      }
+
+      .result-value {
+        font-weight: 700;
+        font-size: 22px;
+        color: var(--text-primary);
+        font-family: "Montserrat", sans-serif;
+      }
+
+      .result-box.final {
+        background: var(--primary);
+        border: none;
+        padding: 24px;
+        transform: scale(1.02);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease-in-out;
+      }
+
+      .result-box.final .result-label {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 13px;
+      }
+
+      .result-box.final .result-value {
+        color: white;
+        font-size: 32px;
+        font-weight: 800;
+        font-family: "Montserrat", sans-serif;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .result-box.final::before {
+        display: none;
+      }
+
+      .result-box.final:hover {
+        transform: scale(1.05);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      .actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 28px;
+        padding-top: 28px;
+        border-top: 2px solid var(--border-color);
+      }
+
+      button {
+        background: var(--primary);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        border: none;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        position: relative;
+        overflow: hidden;
+      }
+
+      button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      button:hover::before {
+        left: 100%;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      button:active {
+        transform: translateY(0) scale(0.98);
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+      }
+
+      button.secondary {
+        background: var(--card-bg);
+        color: var(--primary);
+        border: 2px solid var(--primary);
+        box-shadow: none;
+      }
+
+      button.secondary:hover {
+        background: var(--primary-light);
+        color: white;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      }
+
+      button.small {
+        font-size: 13px;
+        padding: 10px 18px;
+      }
+
+      .formula-section {
+        margin-top: 32px;
+        padding: 20px 24px;
+        background: var(--input-bg);
+        border-radius: 16px;
+        border: 2px solid var(--border-color);
+      }
+
+      .dark-mode .formula-section {
+        background: var(--input-bg);
+        border-color: var(--border-color);
+        color: var(--text-secondary);
+      }
+
+      .formula-section .section-title {
+        color: var(--text-primary);
+        margin-bottom: 16px;
+      }
+
+      .formula-section .section-title::before {
+        content: "💡";
+      }
+
+      .dark-mode .formula-section .section-title {
+        color: var(--text-primary);
+      }
+
+      .formula-section ul {
+        margin: 0;
+        padding-left: 20px;
+        color: #78350f;
+      }
+
+      .dark-mode .formula-section ul {
+        color: var(--text-secondary);
+      }
+
+      .formula-section li {
+        margin-bottom: 8px;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      footer {
+        margin-top: 24px;
+        text-align: center;
+        font-size: 14px;
+        color: var(--text-secondary);
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 16px;
+        backdrop-filter: blur(10px);
+        animation: fadeInUp 0.6s ease-out 0.2s both;
+      }
+
+      footer strong {
+        color: var(--primary);
+        font-weight: 700;
+      }
+
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 900px) {
+        body {
+          padding: 20px 16px;
+        }
+
+        h1 {
+          font-size: 24px;
+        }
+
+        .card {
+          padding: 24px 20px;
+          border-radius: 20px;
+        }
+
+        .main-layout {
+          grid-template-columns: 1fr;
+          gap: 24px;
+        }
+
+        .right-section {
+          position: static;
+        }
+
+        .theme-toggle-btn {
+          top: 16px;
+          right: 16px;
+        }
+
+        .actions {
+          flex-direction: column;
+        }
+
+        button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>Amazon GST & Pricing Calculator</h1>
+        <div class="subtitle">
+          Calculate your product pricing with GST accurately
+        </div>
+
+        <button
+          id="theme-toggle"
+          class="theme-toggle-btn"
+          title="Toggle dark mode"
+        >
+          🌙
+        </button>
+      </header>
+
+      <div class="card">
+        <div class="main-layout">
+          <div class="left-section">
+            <div class="main-section-title" style="color: var(--heading-color)">
+              Product Information:
+            </div>
+
+            <div class="grid" role="form">
+              <div class="input-group">
+                <label>Product name</label>
+                <input id="product" type="text" value="Cane Jaggery Powder" />
+              </div>
+              <div class="input-group">
+                <label>Unit (for display)</label>
+                <input id="unit" type="text" value="per kg" />
+              </div>
+
+              <div class="input-group">
+                <label>Purchase cost (₹)</label>
+                <input id="purchase" type="number" step="0.01" value="50" />
+              </div>
+
+              <div class="input-group">
+                <label>Shipping cost (₹)</label>
+                <input id="shipping" type="number" step="0.01" value="100" />
+              </div>
+
+              <div class="input-group">
+                <label>Amazon referral fee (₹)</label>
+                <input id="referral" type="number" step="0.01" value="7.08" />
+              </div>
+
+              <div class="input-group">
+                <label>Packaging cost (₹)</label>
+                <input id="packaging" type="number" step="0.01" value="20" />
+              </div>
+
+              <div class="input-group">
+                <label>Margin % (on total cost)</label>
+                <input id="margin" type="number" step="0.01" value="18" />
+              </div>
+
+              <div class="input-group">
+                <label>GST rate % (applied on selling price before GST)</label>
+                <input id="gstrate" type="number" step="0.01" value="5" />
+              </div>
+            </div>
+
+            <div class="actions">
+              <button id="calc">✨ Calculate</button>
+              <button id="reset" class="secondary small">
+                🔄 Reset defaults
+              </button>
+              <button id="copy" class="secondary small">
+                📋 Copy final price
+              </button>
+              <button id="share" class="secondary small">🔗 Share</button>
+              <button id="export" class="secondary small">💾 Export CSV</button>
+            </div>
+
+            <div class="formula-section">
+              <div class="section-title">Calculation Formulas</div>
+              <ul>
+                <li>
+                  <strong>Total cost</strong> = Purchase + Shipping + Referral +
+                  Packaging
+                </li>
+                <li><strong>Profit</strong> = Total cost × (Margin % / 100)</li>
+                <li>
+                  <strong>Selling price before GST</strong> = Total cost +
+                  Profit
+                </li>
+                <li>
+                  <strong>GST amount</strong> = Selling price before GST × (GST
+                  % / 100)
+                </li>
+                <li>
+                  <strong>Final selling price</strong> = Selling price before
+                  GST + GST amount
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="right-section">
+            <div class="main-section-title" style="color: var(--heading-color)">
+              Calculation Results:
+            </div>
+
+            <div class="results">
+              <div class="result-box">
+                <div class="result-label">Total cost (excl. GST)</div>
+                <div id="totalCost" class="result-value">₹ 0.00</div>
+              </div>
+
+              <div class="result-box">
+                <div class="result-label">Profit (₹)</div>
+                <div id="profit" class="result-value">₹ 0.00</div>
+              </div>
+
+              <div class="result-box">
+                <div class="result-label">Selling price before GST</div>
+                <div id="sellBefore" class="result-value">₹ 0.00</div>
+              </div>
+
+              <div class="result-box">
+                <div class="result-label">GST amount (₹)</div>
+                <div id="gstAmt" class="result-value">₹ 0.00</div>
+              </div>
+
+              <div class="result-box final">
+                <div class="result-label">
+                  🎯 Final selling price (including GST)
+                </div>
+                <div id="finalPrice" class="result-value">₹ 0.00</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        💡 <strong>Tip:</strong> Margin is calculated on
+        <strong>total cost (excluding GST)</strong>. GST is applied on the
+        selling price before GST.
+      </footer>
+    </div>
+
+    <script>
+      const themeToggle = document.getElementById("theme-toggle");
+      const body = document.body;
+
+      function applyTheme(theme) {
+        if (theme === "dark") {
+          body.classList.add("dark-mode");
+          themeToggle.innerText = "☀️";
+          themeToggle.title = "Switch to light mode";
+        } else {
+          body.classList.remove("dark-mode");
+          themeToggle.innerText = "🌙";
+          themeToggle.title = "Switch to dark mode";
+        }
+      }
+
+      themeToggle.addEventListener("click", () => {
+        const isDarkMode = body.classList.contains("dark-mode");
+        const newTheme = isDarkMode ? "light" : "dark";
+        localStorage.setItem("theme", newTheme);
+        applyTheme(newTheme);
+      });
+
+      // On page load, apply the saved theme or system preference
+      window.addEventListener("DOMContentLoaded", () => {
+        const savedTheme = localStorage.getItem("theme");
+        const prefersDark =
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+        const theme = savedTheme || (prefersDark ? "dark" : "light");
+        applyTheme(theme);
+      });
+
+      let previousResults = {
+        totalCost: 0,
+        profit: 0,
+        sellingBeforeGST: 0,
+        gstAmt: 0,
+        finalPrice: 0,
+      };
+
+      function fmt(n) {
+        return isFinite(n) ? Number(n).toFixed(2) : "0.00";
+      }
+
+      function calculate() {
+        const purchase =
+          parseFloat(document.getElementById("purchase").value) || 0;
+        const shipping =
+          parseFloat(document.getElementById("shipping").value) || 0;
+        const referral =
+          parseFloat(document.getElementById("referral").value) || 0;
+        const packaging =
+          parseFloat(document.getElementById("packaging").value) || 0;
+        const marginPct =
+          parseFloat(document.getElementById("margin").value) || 0;
+        const gstPct =
+          parseFloat(document.getElementById("gstrate").value) || 0;
+
+        const totalCost = purchase + shipping + referral + packaging;
+        const profit = totalCost * (marginPct / 100);
+        const sellingBeforeGST = totalCost + profit;
+        const gstAmt = sellingBeforeGST * (gstPct / 100);
+        const finalPrice = sellingBeforeGST + gstAmt;
+
+        animateValue(
+          document.getElementById("totalCost"),
+          previousResults.totalCost,
+          totalCost,
+          500
+        );
+        animateValue(
+          document.getElementById("profit"),
+          previousResults.profit,
+          profit,
+          500
+        );
+        animateValue(
+          document.getElementById("sellBefore"),
+          previousResults.sellingBeforeGST,
+          sellingBeforeGST,
+          500
+        );
+        animateValue(
+          document.getElementById("gstAmt"),
+          previousResults.gstAmt,
+          gstAmt,
+          500
+        );
+        animateValue(
+          document.getElementById("finalPrice"),
+          previousResults.finalPrice,
+          finalPrice,
+          500
+        );
+
+        previousResults = {
+          totalCost,
+          profit,
+          sellingBeforeGST,
+          gstAmt,
+          finalPrice,
+        };
+
+        return { totalCost, profit, sellingBeforeGST, gstAmt, finalPrice };
+      }
+
+      function animateValue(element, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+          if (!startTimestamp) startTimestamp = timestamp;
+          const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+          const currentValue = progress * (end - start) + start;
+          element.innerText = "₹ " + fmt(currentValue);
+          if (progress < 1) {
+            window.requestAnimationFrame(step);
+          }
+        };
+        window.requestAnimationFrame(step);
+      }
+
+      function resetPreviousResults() {
+        previousResults.totalCost = 0;
+        previousResults.profit = 0;
+        previousResults.sellingBeforeGST = 0;
+        previousResults.gstAmt = 0;
+        previousResults.finalPrice = 0;
+      }
+
+      document.getElementById("calc").addEventListener("click", function (e) {
+        e.preventDefault();
+        calculate();
+      });
+
+      document.getElementById("reset").addEventListener("click", function () {
+        document.getElementById("product").value = "Cane Jaggery Powder";
+        document.getElementById("unit").value = "per kg";
+        document.getElementById("purchase").value = 50;
+        document.getElementById("shipping").value = 100;
+        document.getElementById("referral").value = 7.08;
+        document.getElementById("packaging").value = 20;
+        document.getElementById("margin").value = 18;
+        document.getElementById("gstrate").value = 5;
+        resetPreviousResults();
+        calculate();
+      });
+
+      document
+        .getElementById("copy")
+        .addEventListener("click", async function () {
+          const res = calculate();
+          const text = `${document.getElementById("product").value} (${
+            document.getElementById("unit").value
+          }) - Final price: ₹ ${fmt(res.finalPrice)}`;
+          try {
+            await navigator.clipboard.writeText(text);
+            alert("✅ Final price copied to clipboard!");
+          } catch (e) {
+            prompt("Copy this text", text);
+          }
+        });
+
+      document.getElementById("export").addEventListener("click", function () {
+        const r = calculate();
+        const rows = [
+          [
+            "Product",
+            "Unit",
+            "Purchase",
+            "Shipping",
+            "Referral",
+            "Packaging",
+            "TotalCost",
+            "Margin%",
+            "Profit",
+            "SellingBeforeGST",
+            "GST%",
+            "GSTamt",
+            "FinalPrice",
+          ],
+          [
+            document.getElementById("product").value,
+            document.getElementById("unit").value,
+            document.getElementById("purchase").value,
+            document.getElementById("shipping").value,
+            document.getElementById("referral").value,
+            document.getElementById("packaging").value,
+            fmt(r.totalCost),
+            document.getElementById("margin").value,
+            fmt(r.profit),
+            fmt(r.sellingBeforeGST),
+            document.getElementById("gstrate").value,
+            fmt(r.gstAmt),
+            fmt(r.finalPrice),
+          ],
+        ];
+        const csv = rows
+          .map((r) =>
+            r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")
+          )
+          .join("\n");
+        const blob = new Blob([csv], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download =
+          (document.getElementById("product").value || "pricing") + ".csv";
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      const shareButton = document.getElementById("share");
+      if (navigator.share) {
+        shareButton.addEventListener("click", async () => {
+          const res = calculate();
+          const text = `${document.getElementById("product").value} (${
+            document.getElementById("unit").value
+          }) - Final price: ₹ ${fmt(res.finalPrice)}`;
+
+          try {
+            await navigator.share({
+              title: "Pricing Calculation",
+              text: text,
+              url: window.location.href,
+            });
+          } catch (err) {
+            console.error("Share failed:", err.message);
+          }
+        });
+      } else {
+        // Hide the share button if the Web Share API is not supported
+        shareButton.style.display = "none";
+      }
+
+      document.getElementById("export").addEventListener("click", function () {
+        const r = calculate();
+        const rows = [
+          [
+            "Product",
+            "Unit",
+            "Purchase",
+            "Shipping",
+            "Referral",
+            "Packaging",
+            "TotalCost",
+            "Margin%",
+            "Profit",
+            "SellingBeforeGST",
+            "GST%",
+            "GSTamt",
+            "FinalPrice",
+          ],
+          [
+            document.getElementById("product").value,
+            document.getElementById("unit").value,
+            document.getElementById("purchase").value,
+            document.getElementById("shipping").value,
+            document.getElementById("referral").value,
+            document.getElementById("packaging").value,
+            fmt(r.totalCost),
+            document.getElementById("margin").value,
+            fmt(r.profit),
+            fmt(r.sellingBeforeGST),
+            document.getElementById("gstrate").value,
+            fmt(r.gstAmt),
+            fmt(r.finalPrice),
+          ],
+        ];
+        const csv = rows
+          .map((r) =>
+            r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")
+          )
+          .join("\n");
+        const blob = new Blob([csv], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download =
+          (document.getElementById("product").value || "pricing") + ".csv";
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      // calculate on load with defaults
+      resetPreviousResults();
+      // The DOMContentLoaded listener above handles the initial theme
+      window.addEventListener("load", calculate);
+    </script>
+  </body>
 </html>
