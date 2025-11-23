@@ -10,6 +10,10 @@
       href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@700;800&display=swap"
       rel="stylesheet"
     />
+    <!-- Updated Chart.js libraries with proper versions -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.umd.js"></script>
+
     <style>
       :root {
         --primary: #333;
@@ -152,7 +156,7 @@
           0 10px 20px rgba(0, 0, 0, 0.04);
         padding: 18px;
         animation: fadeInUp 0.6s ease-out;
-        position: center;
+        position: relative;
         overflow: hidden;
       }
 
@@ -484,6 +488,29 @@
         line-height: 1.6;
       }
 
+      /* FIXED: Chart container styles to prevent infinite scrolling */
+      #chart-card {
+        margin-top: 32px;
+      }
+
+      #chart-card .section-title {
+        margin-bottom: 20px;
+      }
+
+      #cost-breakdown-chart {
+        max-height: 350px !important;
+        width: 100% !important;
+        height: auto !important;
+      }
+
+      /* Ensure chart canvas has proper constraints */
+      .chart-container {
+        position: relative;
+        height: 350px;
+        width: 100%;
+        overflow: hidden;
+      }
+
       footer {
         margin-top: 24px;
         text-align: center;
@@ -557,6 +584,74 @@
 
         button {
           width: 100%;
+        }
+
+        /* Mobile responsive chart */
+        #chart-card {
+          min-height: 350px;
+          max-height: 400px;
+        }
+
+        #cost-breakdown-chart {
+          max-height: 300px !important;
+        }
+
+        .chart-container {
+          height: 300px;
+        }
+      }
+
+      #final-price-breakdown {
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 2px solid var(--border-color);
+      }
+
+      #final-price-breakdown table {
+        width: 100%;
+        font-size: 14px;
+        border-collapse: collapse;
+      }
+
+      #final-price-breakdown td {
+        padding: 6px 4px;
+        font-family: "Courier New", Courier, monospace;
+      }
+      #final-price-breakdown td:last-child {
+        text-align: right;
+      }
+
+      @media print {
+        body {
+          padding: 0;
+          background: #fff !important;
+          color: #000 !important;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+
+        .wrap {
+          max-width: 100%;
+          margin: 0;
+        }
+
+        header,
+        .theme-toggle-btn,
+        .actions,
+        footer {
+          display: none !important;
+        }
+
+        .card,
+        .result-box,
+        .formula-section {
+          box-shadow: none !important;
+          border: 1px solid #ccc;
+          border-radius: 0;
+        }
+
+        .right-section {
+          position: static;
         }
       }
     </style>
@@ -636,6 +731,10 @@
               </button>
               <button id="share" class="secondary small">🔗 Share</button>
               <button id="export" class="secondary small">💾 Export CSV</button>
+              <button id="copy-results" class="secondary small">
+                📋 Copy Results
+              </button>
+              <button id="print" class="secondary small">🖨️ Print</button>
             </div>
 
             <div class="formula-section">
@@ -695,6 +794,17 @@
                 <div id="finalPrice" class="result-value">₹ 0.00</div>
               </div>
             </div>
+
+            <!-- FIXED: Added chart container with proper constraints -->
+            <div class="card" id="chart-card">
+              <div class="section-title">📊 Cost Breakdown</div>
+              <div class="chart-container">
+                <canvas id="cost-breakdown-chart"></canvas>
+              </div>
+              <div id="final-price-breakdown">
+                <!-- Calculation breakdown will be injected here -->
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -747,6 +857,27 @@
         gstAmt: 0,
         finalPrice: 0,
       };
+      let costChart = null;
+
+      // FIXED: Proper Chart.js initialization with error handling
+      function initializeChart() {
+        try {
+          // Check if Chart.js is loaded
+          if (typeof Chart === "undefined") {
+            console.error("Chart.js library not loaded");
+            return false;
+          }
+
+          // Register plugins if available
+          if (typeof ChartDataLabels !== "undefined") {
+            Chart.register(ChartDataLabels);
+          }
+          return true;
+        } catch (error) {
+          console.error("Error initializing chart:", error);
+          return false;
+        }
+      }
 
       function fmt(n) {
         return isFinite(n) ? Number(n).toFixed(2) : "0.00";
@@ -811,7 +942,35 @@
           finalPrice,
         };
 
-        return { totalCost, profit, sellingBeforeGST, gstAmt, finalPrice };
+        updateChart({
+          ...previousResults,
+          purchase,
+          shipping,
+          referral,
+          packaging,
+          profit,
+          gstAmt,
+        });
+
+        updateBreakdownTable({
+          ...previousResults,
+          purchase,
+          shipping,
+          referral,
+          packaging,
+        });
+
+        return {
+          totalCost,
+          profit,
+          sellingBeforeGST,
+          gstAmt,
+          finalPrice,
+          purchase,
+          shipping,
+          referral,
+          packaging,
+        };
       }
 
       function animateValue(element, start, end, duration) {
@@ -826,6 +985,170 @@
           }
         };
         window.requestAnimationFrame(step);
+      }
+
+      function updateBreakdownTable(data) {
+        const container = document.getElementById("final-price-breakdown");
+        const {
+          purchase,
+          shipping,
+          referral,
+          packaging,
+          profit,
+          gstAmt,
+          finalPrice,
+        } = data;
+
+        const content = `
+          <table>
+            <tr><td>Purchase Cost</td><td>₹ ${fmt(purchase)}</td></tr>
+            <tr><td>Shipping Cost</td><td>₹ ${fmt(shipping)}</td></tr>
+            <tr><td>Referral Fee</td><td>₹ ${fmt(referral)}</td></tr>
+            <tr><td>Packaging Cost</td><td>₹ ${fmt(packaging)}</td></tr>
+            <tr><td>Profit</td><td>₹ ${fmt(profit)}</td></tr>
+            <tr><td>GST Amount</td><td>₹ ${fmt(gstAmt)}</td></tr>
+            <tr>
+              <td colspan="2" style="padding: 4px 0;">
+                <hr style="border: none; border-top: 1px solid var(--border-color);">
+              </td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold;">Final Selling Price</td>
+              <td style="font-weight: bold;">₹ ${fmt(finalPrice)}</td>
+            </tr>
+          </table>
+        `;
+
+        container.innerHTML = content;
+      }
+
+      function updateChart(data) {
+        // FIXED: Check if chart library is available
+        if (typeof Chart === "undefined") {
+          console.warn("Chart.js not available, skipping chart update");
+          return;
+        }
+
+        const ctx = document
+          .getElementById("cost-breakdown-chart")
+          .getContext("2d");
+        const isDarkMode = document.body.classList.contains("dark-mode");
+        const textColor = isDarkMode ? "#f5f5f5" : "#212121";
+
+        const chartData = {
+          labels: [
+            "Purchase",
+            "Shipping",
+            "Referral",
+            "Packaging",
+            "Profit",
+            "GST",
+          ],
+          datasets: [
+            {
+              label: "Cost Breakdown",
+              data: [
+                data.purchase,
+                data.shipping,
+                data.referral,
+                data.packaging,
+                data.profit,
+                data.gstAmt,
+              ],
+              backgroundColor: [
+                "#4CAF50", // Green
+                "#2196F3", // Blue
+                "#FFC107", // Amber
+                "#9C27B0", // Purple
+                "#FF5722", // Deep Orange
+                "#E91E63", // Pink
+              ],
+              borderColor: isDarkMode ? "#1e1e1e" : "#ffffff",
+              borderWidth: 2,
+            },
+          ],
+        };
+
+        const chartOptions = {
+          responsive: true,
+          maintainAspectRatio: false, // FIXED: Proper aspect ratio control
+          plugins: {
+            legend: {
+              position: "bottom",
+              labels: {
+                color: textColor,
+                font: {
+                  family: "'Lato', sans-serif",
+                  size: 12,
+                },
+                padding: 12,
+                usePointStyle: true,
+              },
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  let label = context.label || "";
+                  if (label) {
+                    label += ": ";
+                  }
+                  if (context.parsed !== null) {
+                    label += "₹ " + fmt(context.parsed);
+                  }
+                  return label;
+                },
+              },
+            },
+            datalabels: {
+              display: true,
+              formatter: (value, ctx) => {
+                const datapoints = ctx.chart.data.datasets[0].data;
+                const total = datapoints.reduce(
+                  (total, datapoint) => total + datapoint,
+                  0
+                );
+                const percentage = (value / total) * 100;
+                // Hide label if percentage is too small to avoid clutter
+                if (percentage < 4) {
+                  return "";
+                }
+                return percentage.toFixed(1) + "%";
+              },
+              color: "#fff",
+              font: { weight: "bold", size: 12 },
+            },
+          },
+          layout: {
+            padding: {
+              top: 10,
+              bottom: 10,
+            },
+          },
+          // FIXED: Prevent infinite canvas expansion
+          animation: {
+            duration: 750,
+          },
+        };
+
+        try {
+          if (costChart) {
+            // Update existing chart
+            costChart.data = chartData;
+            costChart.options.plugins.legend.labels.color = textColor;
+            costChart.options.maintainAspectRatio = false;
+            costChart.options.borderColor = isDarkMode ? "#1e1e1e" : "#ffffff";
+            costChart.update("active");
+          } else {
+            // Create new chart
+            costChart = new Chart(ctx, {
+              type: "doughnut",
+              data: chartData,
+              options: chartOptions,
+            });
+          }
+        } catch (error) {
+          console.error("Error updating chart:", error);
+        }
       }
 
       function resetPreviousResults() {
@@ -869,55 +1192,6 @@
           }
         });
 
-      document.getElementById("export").addEventListener("click", function () {
-        const r = calculate();
-        const rows = [
-          [
-            "Product",
-            "Unit",
-            "Purchase",
-            "Shipping",
-            "Referral",
-            "Packaging",
-            "TotalCost",
-            "Margin%",
-            "Profit",
-            "SellingBeforeGST",
-            "GST%",
-            "GSTamt",
-            "FinalPrice",
-          ],
-          [
-            document.getElementById("product").value,
-            document.getElementById("unit").value,
-            document.getElementById("purchase").value,
-            document.getElementById("shipping").value,
-            document.getElementById("referral").value,
-            document.getElementById("packaging").value,
-            fmt(r.totalCost),
-            document.getElementById("margin").value,
-            fmt(r.profit),
-            fmt(r.sellingBeforeGST),
-            document.getElementById("gstrate").value,
-            fmt(r.gstAmt),
-            fmt(r.finalPrice),
-          ],
-        ];
-        const csv = rows
-          .map((r) =>
-            r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")
-          )
-          .join("\n");
-        const blob = new Blob([csv], { type: "text/csv" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download =
-          (document.getElementById("product").value || "pricing") + ".csv";
-        a.click();
-        URL.revokeObjectURL(url);
-      });
-
       const shareButton = document.getElementById("share");
       if (navigator.share) {
         shareButton.addEventListener("click", async () => {
@@ -928,7 +1202,7 @@
 
           try {
             await navigator.share({
-              title: "Pricing Calculation",
+              title: "Amazon Pricing Calculation",
               text: text,
               url: window.location.href,
             });
@@ -937,7 +1211,6 @@
           }
         });
       } else {
-        // Hide the share button if the Web Share API is not supported
         shareButton.style.display = "none";
       }
 
@@ -962,10 +1235,10 @@
           [
             document.getElementById("product").value,
             document.getElementById("unit").value,
-            document.getElementById("purchase").value,
-            document.getElementById("shipping").value,
-            document.getElementById("referral").value,
-            document.getElementById("packaging").value,
+            fmt(r.purchase),
+            fmt(r.shipping),
+            fmt(r.referral),
+            fmt(r.packaging),
             fmt(r.totalCost),
             document.getElementById("margin").value,
             fmt(r.profit),
@@ -990,10 +1263,85 @@
         URL.revokeObjectURL(url);
       });
 
-      // calculate on load with defaults
-      resetPreviousResults();
-      // The DOMContentLoaded listener above handles the initial theme
-      window.addEventListener("load", calculate);
+      document
+        .getElementById("copy-results")
+        .addEventListener("click", async function () {
+          const r = calculate();
+          const product = document.getElementById("product").value;
+          const unit = document.getElementById("unit").value;
+          const purchase = document.getElementById("purchase").value;
+          const shipping = document.getElementById("shipping").value;
+          const referral = document.getElementById("referral").value;
+          const packaging = document.getElementById("packaging").value;
+          const margin = document.getElementById("margin").value;
+          const gstrate = document.getElementById("gstrate").value;
+
+          const text = `
+Product Information
+-------------------
+Product name:      ${product}
+Unit:              ${unit}
+Purchase cost:     ₹ ${fmt(purchase)}
+Shipping cost:     ₹ ${fmt(shipping)}
+Amazon referral:   ₹ ${fmt(referral)}
+Packaging cost:    ₹ ${fmt(packaging)}
+Margin:            ${margin}%
+GST Rate:          ${gstrate}%
+
+Calculation Results
+-------------------
+Total cost:        ₹ ${fmt(r.totalCost)}
+Profit:            ₹ ${fmt(r.profit)}
+Selling (pre-GST): ₹ ${fmt(r.sellingBeforeGST)}
+GST Amount:        ₹ ${fmt(r.gstAmt)}
+Final Price:       ₹ ${fmt(r.finalPrice)}
+
+Final Price Breakdown
+---------------------
+Purchase Cost:     ₹ ${fmt(r.purchase)}
+Shipping Cost:     ₹ ${fmt(r.shipping)}
+Referral Fee:      ₹ ${fmt(r.referral)}
+Packaging Cost:    ₹ ${fmt(r.packaging)}
+Profit:            ₹ ${fmt(r.profit)}
+GST Amount:        ₹ ${fmt(r.gstAmt)}
+---------------------------------
+Final Selling Price: ₹ ${fmt(r.finalPrice)}
+
+Calculation Formulas
+--------------------
+Total cost = Purchase + Shipping + Referral + Packaging
+Profit = Total cost × (Margin % / 100)
+Selling price before GST = Total cost + Profit
+GST amount = Selling price before GST × (GST % / 100)
+Final selling price = Selling price before GST + GST amount
+        `.trim();
+
+          try {
+            await navigator.clipboard.writeText(text);
+            alert("✅ Results copied to clipboard!");
+          } catch (e) {
+            prompt("Copy this text", text);
+          }
+        });
+
+      document.getElementById("print").addEventListener("click", function () {
+        // Use the browser's native print functionality on the whole page
+        window.print();
+      });
+
+      // FIXED: Initialize chart with proper error handling
+      window.addEventListener("DOMContentLoaded", () => {
+        resetPreviousResults();
+
+        // Initialize chart with error handling
+        const chartInitialized = initializeChart();
+        if (chartInitialized) {
+          // Small delay to ensure DOM is fully ready
+          setTimeout(() => {
+            calculate();
+          }, 100);
+        }
+      });
     </script>
   </body>
 </html>
