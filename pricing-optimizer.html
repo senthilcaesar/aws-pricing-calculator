@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Amazon Product Pricing Optimizer</title>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.production.min.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState } = React;
+
+      // Lucide React icons as inline SVG components
+      const ArrowRight = () => (
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      );
+
+      const TrendingUp = () => (
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+          <polyline points="17 6 23 6 23 12"></polyline>
+        </svg>
+      );
+
+      const Info = () => (
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+      );
+
+      function PricingOptimizer() {
+        // Base values
+        const [basePurchase, setBasePurchase] = useState(80);
+        const [baseShipping, setBaseShipping] = useState(76);
+        const [baseReferral, setBaseReferral] = useState(7.08);
+        const [basePackaging, setBasePackaging] = useState(20);
+        const [baseMargin, setBaseMargin] = useState(29.5);
+        const [gstRate, setGstRate] = useState(5);
+
+        // Optimization percentages
+        const [purchaseReduction, setPurchaseReduction] = useState(0);
+        const [shippingReduction, setShippingReduction] = useState(0);
+        const [referralReduction, setReferralReduction] = useState(0);
+        const [packagingReduction, setPackagingReduction] = useState(0);
+
+        // Calculate base scenario
+        const calculateScenario = (
+          purchase,
+          shipping,
+          referral,
+          packaging,
+          margin,
+          gst
+        ) => {
+          const totalCost = purchase + shipping + referral + packaging;
+          const profit = totalCost * (margin / 100);
+          const sellingPreGST = totalCost + profit;
+          const gstAmount = sellingPreGST * (gst / 100);
+          const finalPrice = sellingPreGST + gstAmount;
+
+          return {
+            totalCost,
+            profit,
+            sellingPreGST,
+            gstAmount,
+            finalPrice,
+            profitMargin: (profit / finalPrice) * 100,
+          };
+        };
+
+        const base = calculateScenario(
+          basePurchase,
+          baseShipping,
+          baseReferral,
+          basePackaging,
+          baseMargin,
+          gstRate
+        );
+
+        // Calculate optimized scenario
+        const optPurchase = basePurchase * (1 - purchaseReduction / 100);
+        const optShipping = baseShipping * (1 - shippingReduction / 100);
+        const optReferral = baseReferral * (1 - referralReduction / 100);
+        const optPackaging = basePackaging * (1 - packagingReduction / 100);
+
+        // Keep final price same as base, recalculate profit
+        const finalPrice = base.finalPrice;
+        const gstAmount = (finalPrice / (1 + gstRate / 100)) * (gstRate / 100);
+        const sellingPreGST = finalPrice - gstAmount;
+        const totalCostOpt =
+          optPurchase + optShipping + optReferral + optPackaging;
+        const newProfit = sellingPreGST - totalCostOpt;
+        const newProfitMargin = (newProfit / finalPrice) * 100;
+
+        const profitIncrease = newProfit - base.profit;
+        const profitIncreasePercent =
+          ((newProfit - base.profit) / base.profit) * 100;
+
+        return (
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+            <div className="max-w-6xl mx-auto">
+              <div className="bg-white rounded-lg shadow-xl p-8 mb-6">
+                <h1 className="text-3xl font-bold text-gray-800 mb-2">
+                  Amazon Pricing Optimizer
+                </h1>
+                <p className="text-gray-600 mb-6">
+                  Model cost reductions to increase profit without changing
+                  customer price
+                </p>
+
+                {/* Base Inputs */}
+                <div className="bg-blue-50 rounded-lg p-6 mb-6">
+                  <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                    Base Cost Structure
+                  </h2>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Purchase Cost (₹)
+                      </label>
+                      <input
+                        type="number"
+                        value={basePurchase}
+                        onChange={(e) =>
+                          setBasePurchase(parseFloat(e.target.value) || 0)
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        step="0.01"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Shipping Cost (₹)
+                      </label>
+                      <input
+                        type="number"
+                        value={baseShipping}
+                        onChange={(e) =>
+                          setBaseShipping(parseFloat(e.target.value) || 0)
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        step="0.01"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Referral Fee (₹)
+                      </label>
+                      <input
+                        type="number"
+                        value={baseReferral}
+                        onChange={(e) =>
+                          setBaseReferral(parseFloat(e.target.value) || 0)
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        step="0.01"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Packaging Cost (₹)
+                      </label>
+                      <input
+                        type="number"
+                        value={basePackaging}
+                        onChange={(e) =>
+                          setBasePackaging(parseFloat(e.target.value) || 0)
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        step="0.01"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Target Margin (%)
+                      </label>
+                      <input
+                        type="number"
+                        value={baseMargin}
+                        onChange={(e) =>
+                          setBaseMargin(parseFloat(e.target.value) || 0)
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        step="0.1"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        GST Rate (%)
+                      </label>
+                      <input
+                        type="number"
+                        value={gstRate}
+                        onChange={(e) =>
+                          setGstRate(parseFloat(e.target.value) || 0)
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        step="0.1"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Optimization Sliders */}
+                <div className="bg-green-50 rounded-lg p-6 mb-6">
+                  <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                    <TrendingUp />
+                    Cost Reduction Strategies
+                  </h2>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Adjust sliders to model percentage reductions in each cost
+                    category
+                  </p>
+
+                  <div className="space-y-6">
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <label className="text-sm font-medium text-gray-700">
+                          Purchase Cost Reduction
+                        </label>
+                        <span className="text-sm font-bold text-green-600">
+                          {purchaseReduction}% (Save ₹
+                          {((basePurchase * purchaseReduction) / 100).toFixed(
+                            2
+                          )}
+                          )
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="30"
+                        step="1"
+                        value={purchaseReduction}
+                        onChange={(e) =>
+                          setPurchaseReduction(parseFloat(e.target.value))
+                        }
+                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Strategy: Volume negotiation, direct sourcing, supplier
+                        consolidation
+                      </p>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <label className="text-sm font-medium text-gray-700">
+                          Shipping Cost Reduction
+                        </label>
+                        <span className="text-sm font-bold text-green-600">
+                          {shippingReduction}% (Save ₹
+                          {((baseShipping * shippingReduction) / 100).toFixed(
+                            2
+                          )}
+                          )
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="40"
+                        step="1"
+                        value={shippingReduction}
+                        onChange={(e) =>
+                          setShippingReduction(parseFloat(e.target.value))
+                        }
+                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Strategy: Bulk shipping, regional warehousing, carrier
+                        negotiation
+                      </p>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <label className="text-sm font-medium text-gray-700">
+                          Packaging Cost Reduction
+                        </label>
+                        <span className="text-sm font-bold text-green-600">
+                          {packagingReduction}% (Save ₹
+                          {((basePackaging * packagingReduction) / 100).toFixed(
+                            2
+                          )}
+                          )
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="40"
+                        step="1"
+                        value={packagingReduction}
+                        onChange={(e) =>
+                          setPackagingReduction(parseFloat(e.target.value))
+                        }
+                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Strategy: Bulk material purchase, minimalist design,
+                        lighter materials
+                      </p>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <label className="text-sm font-medium text-gray-700">
+                          Referral Fee Reduction
+                        </label>
+                        <span className="text-sm font-bold text-green-600">
+                          {referralReduction}% (Save ₹
+                          {((baseReferral * referralReduction) / 100).toFixed(
+                            2
+                          )}
+                          )
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="20"
+                        step="1"
+                        value={referralReduction}
+                        onChange={(e) =>
+                          setReferralReduction(parseFloat(e.target.value))
+                        }
+                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Strategy: Category optimization, special programs,
+                        multi-platform selling
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Comparison Results */}
+                <div className="grid md:grid-cols-2 gap-6 mb-6">
+                  {/* Current Scenario */}
+                  <div className="bg-gray-50 rounded-lg p-6 border-2 border-gray-300">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                      Current Scenario
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Purchase Cost:</span>
+                        <span className="font-medium">
+                          ₹{basePurchase.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Shipping Cost:</span>
+                        <span className="font-medium">
+                          ₹{baseShipping.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Referral Fee:</span>
+                        <span className="font-medium">
+                          ₹{baseReferral.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Packaging Cost:</span>
+                        <span className="font-medium">
+                          ₹{basePackaging.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="border-t pt-3 flex justify-between font-semibold">
+                        <span className="text-gray-800">Total Cost:</span>
+                        <span>₹{base.totalCost.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between text-green-600 font-bold text-lg">
+                        <span>Profit:</span>
+                        <span>₹{base.profit.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between font-semibold text-blue-600">
+                        <span>Final Price:</span>
+                        <span>₹{base.finalPrice.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm text-gray-600">
+                        <span>Profit Margin:</span>
+                        <span>{base.profitMargin.toFixed(2)}%</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Optimized Scenario */}
+                  <div className="bg-green-50 rounded-lg p-6 border-2 border-green-500">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                      Optimized Scenario
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Purchase Cost:</span>
+                        <span className="font-medium text-green-600">
+                          ₹{optPurchase.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Shipping Cost:</span>
+                        <span className="font-medium text-green-600">
+                          ₹{optShipping.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Referral Fee:</span>
+                        <span className="font-medium text-green-600">
+                          ₹{optReferral.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Packaging Cost:</span>
+                        <span className="font-medium text-green-600">
+                          ₹{optPackaging.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="border-t pt-3 flex justify-between font-semibold">
+                        <span className="text-gray-800">Total Cost:</span>
+                        <span className="text-green-600">
+                          ₹{totalCostOpt.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-green-600 font-bold text-lg">
+                        <span>Profit:</span>
+                        <span>₹{newProfit.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between font-semibold text-blue-600">
+                        <span>Final Price:</span>
+                        <span>₹{finalPrice.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm text-gray-600">
+                        <span>Profit Margin:</span>
+                        <span>{newProfitMargin.toFixed(2)}%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Impact Summary */}
+                <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-6 text-white">
+                  <div className="flex items-center gap-3 mb-4">
+                    <ArrowRight />
+                    <h3 className="text-2xl font-bold">Impact Summary</h3>
+                  </div>
+                  <div className="grid md:grid-cols-3 gap-6">
+                    <div>
+                      <p className="text-green-100 text-sm mb-1">
+                        Profit Increase
+                      </p>
+                      <p className="text-3xl font-bold">
+                        ₹{profitIncrease.toFixed(2)}
+                      </p>
+                      <p className="text-green-100 text-sm mt-1">
+                        +{profitIncreasePercent.toFixed(1)}% more profit
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-green-100 text-sm mb-1">
+                        Cost Savings
+                      </p>
+                      <p className="text-3xl font-bold">
+                        ₹{(base.totalCost - totalCostOpt).toFixed(2)}
+                      </p>
+                      <p className="text-green-100 text-sm mt-1">
+                        Per unit reduction
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-green-100 text-sm mb-1">
+                        Customer Price
+                      </p>
+                      <p className="text-3xl font-bold">
+                        ₹{finalPrice.toFixed(2)}
+                      </p>
+                      <p className="text-green-100 text-sm mt-1">Unchanged</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Volume Impact Calculator */}
+                <div className="mt-6 bg-indigo-50 rounded-lg p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Info />
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      Annual Impact Calculator
+                    </h3>
+                  </div>
+                  <div className="grid md:grid-cols-4 gap-4">
+                    {[100, 500, 1000, 5000].map((units) => {
+                      const annualIncrease = profitIncrease * units;
+                      return (
+                        <div
+                          key={units}
+                          className="bg-white rounded-lg p-4 text-center"
+                        >
+                          <p className="text-sm text-gray-600 mb-1">
+                            {units} units/month
+                          </p>
+                          <p className="text-2xl font-bold text-indigo-600">
+                            ₹{annualIncrease.toFixed(0)}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Extra profit/month
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // Render the app
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<PricingOptimizer />);
+    </script>
+  </body>
+</html>
