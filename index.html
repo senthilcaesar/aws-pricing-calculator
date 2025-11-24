@@ -1114,7 +1114,7 @@
 
         const profit = sellingBeforeGST - totalCost;
         const gstAmt = sellingBeforeGST * (gstPct / 100);
-        const finalPrice = sellingBeforeGST + gstAmt;
+        const finalPrice = Math.round(sellingBeforeGST + gstAmt);
 
         animateValue(
           document.getElementById("totalCost"),
@@ -1585,12 +1585,14 @@ Profit:            ₹ ${fmt(r.profit)}
 GST Amount:        ₹ ${fmt(r.gstAmt)}
 ---------------------------------
 Final Selling Price: ₹ ${fmt(r.finalPrice)}
+---------------------------------
+
 
 Calculation Formulas
 --------------------
 Total cost = Purchase + Shipping + Referral + Packaging
-Profit = Total cost × (Margin % / 100)
-Selling price before GST = Total cost + Profit
+Selling price before GST = Total cost / (1 - (Margin % / 100))
+Profit = Selling price before GST - Total cost
 GST amount = Selling price before GST × (GST % / 100)
 Final selling price = Selling price before GST + GST amount
         `.trim();
