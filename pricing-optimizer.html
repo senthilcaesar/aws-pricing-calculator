@@ -73,11 +73,11 @@
 
       function PricingOptimizer() {
         // Base values
-        const [basePurchase, setBasePurchase] = useState(80);
-        const [baseShipping, setBaseShipping] = useState(76);
+        const [basePurchase, setBasePurchase] = useState(50);
+        const [baseShipping, setBaseShipping] = useState(100);
         const [baseReferral, setBaseReferral] = useState(7.08);
         const [basePackaging, setBasePackaging] = useState(20);
-        const [baseMargin, setBaseMargin] = useState(29.5);
+        const [baseMargin, setBaseMargin] = useState(15);
         const [gstRate, setGstRate] = useState(5);
 
         // Optimization percentages
@@ -96,8 +96,17 @@
           gst
         ) => {
           const totalCost = purchase + shipping + referral + packaging;
-          const profit = totalCost * (margin / 100);
-          const sellingPreGST = totalCost + profit;
+          
+          // Gross Margin Calculation:
+          // Selling Price = Total Cost / (1 - Margin%)
+          let sellingPreGST = 0;
+          if (margin < 100) {
+            sellingPreGST = totalCost / (1 - (margin / 100));
+          } else {
+            sellingPreGST = totalCost;
+          }
+          
+          const profit = sellingPreGST - totalCost;
           const gstAmount = sellingPreGST * (gst / 100);
           const finalPrice = sellingPreGST + gstAmount;
 
@@ -215,7 +224,7 @@
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Target Margin (%)
+                        Target Margin % (on Selling Price before GST)
                       </label>
                       <input
                         type="number"

@@ -22,18 +22,18 @@
         --primary-light: #34d399;
         --secondary: #8b5cf6;
         --accent: #f59e0b;
-        
+
         /* Background Gradients */
         --bg-gradient-start: #f0fdf4;
         --bg-gradient-end: #dbeafe;
         --card-bg: rgba(255, 255, 255, 0.95);
-        
+
         /* Text Colors */
         --text-primary: #1f2937;
         --main-heading-color: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
         --text-secondary: #6b7280;
         --text-muted: #9ca3af;
-        
+
         /* UI Elements */
         --border-color: #e5e7eb;
         --input-bg: #ffffff;
@@ -41,11 +41,11 @@
         --heading-color: #8b5cf6;
         --success-bg: linear-gradient(135deg, #10b981 0%, #34d399 100%);
         --success-text: #ffffff;
-        
+
         /* Glassmorphism */
         --glass-bg: rgba(255, 255, 255, 0.7);
         --glass-border: rgba(255, 255, 255, 0.18);
-        
+
         /* Shadows */
         --shadow-sm: 0 4px 6px -1px rgba(16, 185, 129, 0.1);
         --shadow-md: 0 10px 25px -5px rgba(16, 185, 129, 0.2);
@@ -60,28 +60,28 @@
         --primary-light: #a78bfa;
         --secondary: #10b981;
         --accent: #f59e0b;
-        
+
         /* Dark Backgrounds with Gradient */
         --bg-gradient-start: #0f172a;
         --bg-gradient-end: #1e1b4b;
         --card-bg: rgba(30, 27, 75, 0.8);
-        
+
         /* Dark Text Colors */
         --text-primary: #f1f5f9;
         --main-heading-color: linear-gradient(135deg, #8b5cf6 0%, #10b981 100%);
         --text-secondary: #cbd5e1;
         --text-muted: #94a3b8;
-        
+
         /* Dark UI Elements */
         --border-color: #334155;
         --input-bg: rgba(51, 65, 85, 0.5);
         --success-bg: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
         --heading-color: #10b981;
-        
+
         /* Dark Glassmorphism */
         --glass-bg: rgba(30, 27, 75, 0.6);
         --glass-border: rgba(139, 92, 246, 0.2);
-        
+
         /* Dark Shadows with Glow */
         --shadow-sm: 0 4px 6px -1px rgba(139, 92, 246, 0.2);
         --shadow-md: 0 10px 25px -5px rgba(139, 92, 246, 0.3);
@@ -110,7 +110,7 @@
       .dark-mode input[type="text"]:focus {
         background: rgba(51, 65, 85, 0.7);
         box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2),
-                    0 4px 12px rgba(139, 92, 246, 0.3);
+          0 4px 12px rgba(139, 92, 246, 0.3);
       }
 
       * {
@@ -191,8 +191,7 @@
       }
 
       .dark-mode .theme-toggle-btn:hover {
-        box-shadow: var(--shadow-md), 
-                    0 0 30px rgba(139, 92, 246, 0.4);
+        box-shadow: var(--shadow-md), 0 0 30px rgba(139, 92, 246, 0.4);
       }
 
       .card {
@@ -201,8 +200,7 @@
         -webkit-backdrop-filter: blur(20px);
         border-radius: 24px;
         border: 1px solid var(--glass-border);
-        box-shadow: var(--shadow-lg), 
-                    0 0 0 1px rgba(16, 185, 129, 0.1);
+        box-shadow: var(--shadow-lg), 0 0 0 1px rgba(16, 185, 129, 0.1);
         padding: 18px;
         animation: fadeInUp 0.6s ease-out;
         position: relative;
@@ -237,7 +235,12 @@
         left: 0;
         right: 0;
         height: 6px;
-        background: linear-gradient(90deg, #10b981 0%, #3b82f6 50%, #8b5cf6 100%);
+        background: linear-gradient(
+          90deg,
+          #10b981 0%,
+          #3b82f6 50%,
+          #8b5cf6 100%
+        );
         box-shadow: 0 2px 10px rgba(16, 185, 129, 0.5);
       }
 
@@ -331,7 +334,7 @@
         border-color: var(--primary);
         background: var(--card-bg);
         box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15),
-                    0 4px 12px rgba(16, 185, 129, 0.2);
+          0 4px 12px rgba(16, 185, 129, 0.2);
         transform: translateY(-2px);
       }
 
@@ -348,7 +351,11 @@
       }
 
       .result-box {
-        background: linear-gradient(135deg, var(--glass-bg) 0%, rgba(255, 255, 255, 0.5) 100%);
+        background: linear-gradient(
+          135deg,
+          var(--glass-bg) 0%,
+          rgba(255, 255, 255, 0.5) 100%
+        );
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         padding: 20px;
@@ -405,8 +412,8 @@
         padding: 24px;
         transform: scale(1.02);
         box-shadow: 0 10px 30px rgba(143, 188, 143, 0.4),
-                    0 0 40px rgba(143, 188, 143, 0.3),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+          0 0 40px rgba(143, 188, 143, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.2);
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
@@ -432,8 +439,8 @@
       .result-box.final:hover {
         transform: scale(1.06) translateY(-4px);
         box-shadow: 0 15px 40px rgba(143, 188, 143, 0.5),
-                    0 0 60px rgba(143, 188, 143, 0.4),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+          0 0 60px rgba(143, 188, 143, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.3);
       }
 
       .actions {
@@ -866,32 +873,32 @@
 
               <div class="input-group">
                 <label>Purchase cost (₹)</label>
-                <input id="purchase" type="number" step="0.01" value="50" />
+                <input id="purchase" type="number" step="0.1" value="50" />
               </div>
 
               <div class="input-group">
                 <label>Shipping cost (₹)</label>
-                <input id="shipping" type="number" step="0.01" value="100" />
+                <input id="shipping" type="number" step="0.1" value="100" />
               </div>
 
               <div class="input-group">
                 <label>Amazon referral fee (₹)</label>
-                <input id="referral" type="number" step="0.01" value="7.08" />
+                <input id="referral" type="number" step="0.1" value="7.08" />
               </div>
 
               <div class="input-group">
                 <label>Packaging cost (₹)</label>
-                <input id="packaging" type="number" step="0.01" value="20" />
+                <input id="packaging" type="number" step="0.1" value="20" />
               </div>
 
               <div class="input-group">
-                <label>Margin % (on total cost)</label>
-                <input id="margin" type="number" step="0.01" value="18" />
+                <label>Margin % (on Selling Price before GST)</label>
+                <input id="margin" type="number" step="0.1" value="15" />
               </div>
 
               <div class="input-group">
                 <label>GST rate % (applied on selling price before GST)</label>
-                <input id="gstrate" type="number" step="0.01" value="5" />
+                <input id="gstrate" type="number" step="0.1" value="5" />
               </div>
             </div>
 
@@ -918,10 +925,13 @@
                   <strong>Total cost</strong> = Purchase + Shipping + Referral +
                   Packaging
                 </li>
-                <li><strong>Profit</strong> = Total cost × (Margin % / 100)</li>
                 <li>
-                  <strong>Selling price before GST</strong> = Total cost +
-                  Profit
+                  <strong>Selling price before GST</strong> = Total cost / (1 -
+                  (Margin % / 100))
+                </li>
+                <li>
+                  <strong>Profit</strong> = Selling price before GST - Total
+                  cost
                 </li>
                 <li>
                   <strong>GST amount</strong> = Selling price before GST × (GST
@@ -998,8 +1008,8 @@
 
       <footer>
         💡 <strong>Tip:</strong> Margin is calculated on
-        <strong>total cost (excluding GST)</strong>. GST is applied on the
-        selling price before GST.
+        <strong>Selling price before GST</strong>. GST is applied on the selling
+        price before GST.
       </footer>
     </div>
 
@@ -1017,7 +1027,7 @@
           themeToggle.innerText = "🌙";
           themeToggle.title = "Switch to dark mode";
         }
-        
+
         // Update chart if it exists to apply new theme colors
         if (typeof costChart !== "undefined" && costChart) {
           calculate();
@@ -1090,8 +1100,19 @@
           parseFloat(document.getElementById("gstrate").value) || 0;
 
         const totalCost = purchase + shipping + referral + packaging;
-        const profit = totalCost * (marginPct / 100);
-        const sellingBeforeGST = totalCost + profit;
+
+        // Gross Margin Calculation:
+        // Selling Price = Total Cost / (1 - Margin%)
+        let sellingBeforeGST = 0;
+        if (marginPct < 100) {
+          sellingBeforeGST = totalCost / (1 - marginPct / 100);
+        } else {
+          // Prevent division by zero or negative price
+          sellingBeforeGST = totalCost;
+          alert("Margin cannot be 100% or more!");
+        }
+
+        const profit = sellingBeforeGST - totalCost;
         const gstAmt = sellingBeforeGST * (gstPct / 100);
         const finalPrice = sellingBeforeGST + gstAmt;
 
@@ -1272,11 +1293,11 @@
                 font: {
                   family: "'Lato', sans-serif",
                   size: 12,
-                  weight: "bold"
+                  weight: "bold",
                 },
                 padding: 20,
                 usePointStyle: true,
-                pointStyle: "circle"
+                pointStyle: "circle",
               },
             },
             tooltip: {
@@ -1310,10 +1331,10 @@
                 return label + "\n" + percentage.toFixed(1) + "%";
               },
               color: "#fff",
-              font: { 
-                weight: "bold", 
+              font: {
+                weight: "bold",
                 size: 12,
-                lineHeight: 1.3
+                lineHeight: 1.3,
               },
               textAlign: "center",
               anchor: "center",
@@ -1350,7 +1371,7 @@
             data: chartData,
             options: chartOptions,
           };
-          
+
           // Add datalabels plugin if available
           if (typeof ChartDataLabels !== "undefined") {
             // Disable default labels as we have custom legend now
@@ -1359,12 +1380,11 @@
           } else {
             console.warn("ChartDataLabels plugin not found");
           }
-          
+
           costChart = new Chart(ctx, chartConfig);
-          
+
           // Update custom legend
           updateCustomLegend(chartData);
-          
         } catch (error) {
           console.error("Error updating chart:", error);
         }
@@ -1380,12 +1400,13 @@
         const total = values.reduce((a, b) => a + b, 0);
 
         let html = "";
-        
+
         labels.forEach((label, index) => {
           const value = values[index];
           const color = colors[index];
-          const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : "0.0";
-          
+          const percentage =
+            total > 0 ? ((value / total) * 100).toFixed(1) : "0.0";
+
           // Skip if value is 0
           if (value <= 0) return;
 
@@ -1429,7 +1450,7 @@
         document.getElementById("shipping").value = 100;
         document.getElementById("referral").value = 7.08;
         document.getElementById("packaging").value = 20;
-        document.getElementById("margin").value = 18;
+        document.getElementById("margin").value = 20;
         document.getElementById("gstrate").value = 5;
         resetPreviousResults();
         calculate();
