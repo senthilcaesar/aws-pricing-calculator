@@ -16,49 +16,90 @@
 
     <style>
       :root {
-        --primary: #333;
-        --primary-dark: #000;
-        --primary-light: #555;
-        --secondary: #555;
-        --accent: #777;
-        --bg-gradient-start: #f4f4f4;
-        --bg-gradient-end: #f4f4f4;
-        --card-bg: #ffffff;
-        --text-primary: #212121;
-        --main-heading-color: #e65100; /* Dark Orange */
-        --text-secondary: #757575;
-        --text-muted: #9e9e9e;
-        --border-color: #e0e0e0;
-        --input-bg: #f9fafb;
-        --result-bg: linear-gradient(135deg, #333 0%, #555 100%);
-        --heading-color: navy;
-        --success-bg: #e0e0e0;
-        --success-text: #212121;
+        /* Vibrant Primary Colors - Teal/Emerald Gradient */
+        --primary: #10b981;
+        --primary-dark: #059669;
+        --primary-light: #34d399;
+        --secondary: #8b5cf6;
+        --accent: #f59e0b;
+        
+        /* Background Gradients */
+        --bg-gradient-start: #f0fdf4;
+        --bg-gradient-end: #dbeafe;
+        --card-bg: rgba(255, 255, 255, 0.95);
+        
+        /* Text Colors */
+        --text-primary: #1f2937;
+        --main-heading-color: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+        --text-secondary: #6b7280;
+        --text-muted: #9ca3af;
+        
+        /* UI Elements */
+        --border-color: #e5e7eb;
+        --input-bg: #ffffff;
+        --result-bg: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        --heading-color: #8b5cf6;
+        --success-bg: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+        --success-text: #ffffff;
+        
+        /* Glassmorphism */
+        --glass-bg: rgba(255, 255, 255, 0.7);
+        --glass-border: rgba(255, 255, 255, 0.18);
+        
+        /* Shadows */
+        --shadow-sm: 0 4px 6px -1px rgba(16, 185, 129, 0.1);
+        --shadow-md: 0 10px 25px -5px rgba(16, 185, 129, 0.2);
+        --shadow-lg: 0 20px 50px -12px rgba(16, 185, 129, 0.3);
+        --shadow-glow: 0 0 30px rgba(16, 185, 129, 0.4);
       }
 
       body.dark-mode {
-        --primary: #000080; /* Dark Navy Blue */
-        --primary-dark: #fff;
-        --primary-light: #eee;
-        --secondary: #bbb;
-        --accent: #999;
-        --bg-gradient-start: #121212;
-        --bg-gradient-end: #121212;
-        --card-bg: #1e1e1e;
-        --text-primary: #f5f5f5;
-        --main-heading-color: #fb8c00; /* Lighter Orange for dark mode */
-        --text-secondary: #bdbdbd;
-        --text-muted: #9e9e9e;
-        --border-color: #424242;
-        --input-bg: #333;
-        --success-bg: #424242;
-        --heading-color: #87cefa; /* LightSkyBlue */
+        /* Dark Mode - Vibrant Purple/Blue Theme */
+        --primary: #8b5cf6;
+        --primary-dark: #7c3aed;
+        --primary-light: #a78bfa;
+        --secondary: #10b981;
+        --accent: #f59e0b;
+        
+        /* Dark Backgrounds with Gradient */
+        --bg-gradient-start: #0f172a;
+        --bg-gradient-end: #1e1b4b;
+        --card-bg: rgba(30, 27, 75, 0.8);
+        
+        /* Dark Text Colors */
+        --text-primary: #f1f5f9;
+        --main-heading-color: linear-gradient(135deg, #8b5cf6 0%, #10b981 100%);
+        --text-secondary: #cbd5e1;
+        --text-muted: #94a3b8;
+        
+        /* Dark UI Elements */
+        --border-color: #334155;
+        --input-bg: rgba(51, 65, 85, 0.5);
+        --success-bg: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+        --heading-color: #10b981;
+        
+        /* Dark Glassmorphism */
+        --glass-bg: rgba(30, 27, 75, 0.6);
+        --glass-border: rgba(139, 92, 246, 0.2);
+        
+        /* Dark Shadows with Glow */
+        --shadow-sm: 0 4px 6px -1px rgba(139, 92, 246, 0.2);
+        --shadow-md: 0 10px 25px -5px rgba(139, 92, 246, 0.3);
+        --shadow-lg: 0 20px 50px -12px rgba(139, 92, 246, 0.4);
+        --shadow-glow: 0 0 40px rgba(139, 92, 246, 0.5);
       }
 
       body.dark-mode button.secondary {
+        background: transparent;
+        color: var(--primary);
+        border-color: var(--primary);
+      }
+
+      body.dark-mode button.secondary:hover {
         background: var(--primary);
         color: white;
-        --success-text: #f5f5f5;
+        border-color: var(--primary);
+        box-shadow: var(--shadow-md);
       }
 
       body.dark-mode footer {
@@ -67,8 +108,9 @@
 
       .dark-mode input[type="number"]:focus,
       .dark-mode input[type="text"]:focus {
-        background: #1e293b;
-        box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.2);
+        background: rgba(51, 65, 85, 0.7);
+        box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2),
+                    0 4px 12px rgba(139, 92, 246, 0.3);
       }
 
       * {
@@ -111,6 +153,7 @@
         -webkit-text-fill-color: transparent;
         background-clip: text;
         letter-spacing: -0.5px;
+        filter: drop-shadow(0 2px 8px rgba(16, 185, 129, 0.3));
       }
 
       .subtitle {
@@ -123,8 +166,10 @@
         position: absolute;
         top: 24px;
         right: 24px;
-        background: var(--card-bg);
-        border: 2px solid var(--border-color);
+        background: var(--glass-bg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 2px solid var(--glass-border);
         color: var(--text-secondary);
         width: 44px;
         height: 44px;
@@ -134,26 +179,30 @@
         align-items: center;
         justify-content: center;
         font-size: 20px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--shadow-sm);
       }
 
       .theme-toggle-btn:hover {
         border-color: var(--primary);
         color: var(--primary);
-        transform: translateY(-2px) scale(1.05);
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px) scale(1.1) rotate(15deg);
+        box-shadow: var(--shadow-md), var(--shadow-glow);
       }
 
       .dark-mode .theme-toggle-btn:hover {
-        box-shadow: 0 6px 15px rgba(255, 255, 255, 0.1);
+        box-shadow: var(--shadow-md), 
+                    0 0 30px rgba(139, 92, 246, 0.4);
       }
 
       .card {
-        background: var(--card-bg);
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         border-radius: 24px;
-        box-shadow: 0 20px 50px rgba(16, 185, 129, 0.15),
-          0 10px 20px rgba(0, 0, 0, 0.04);
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--shadow-lg), 
+                    0 0 0 1px rgba(16, 185, 129, 0.1);
         padding: 18px;
         animation: fadeInUp 0.6s ease-out;
         position: relative;
@@ -188,7 +237,8 @@
         left: 0;
         right: 0;
         height: 6px;
-        background: var(--primary);
+        background: linear-gradient(90deg, #10b981 0%, #3b82f6 50%, #8b5cf6 100%);
+        box-shadow: 0 2px 10px rgba(16, 185, 129, 0.5);
       }
 
       .main-section-title {
@@ -270,8 +320,9 @@
         font-size: 15px;
         background: var(--input-bg);
         color: var(--text-primary);
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         font-weight: 400;
+        box-shadow: var(--shadow-sm);
       }
 
       input[type="number"]:focus,
@@ -279,13 +330,15 @@
         outline: none;
         border-color: var(--primary);
         background: var(--card-bg);
-        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
-        transform: translateY(-1px);
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15),
+                    0 4px 12px rgba(16, 185, 129, 0.2);
+        transform: translateY(-2px);
       }
 
       input[type="number"]:hover,
       input[type="text"]:hover {
-        border-color: var(--primary);
+        border-color: var(--primary-light);
+        box-shadow: var(--shadow-md);
       }
 
       .results {
@@ -295,13 +348,16 @@
       }
 
       .result-box {
-        background: var(--input-bg);
+        background: linear-gradient(135deg, var(--glass-bg) 0%, rgba(255, 255, 255, 0.5) 100%);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         padding: 20px;
         border-radius: 16px;
         border: 2px solid var(--border-color);
-        transition: all 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
+        box-shadow: var(--shadow-sm);
       }
 
       .result-box::before {
@@ -311,14 +367,14 @@
         left: 0;
         width: 4px;
         height: 100%;
-        background: var(--primary);
+        background: linear-gradient(180deg, #10b981 0%, #3b82f6 100%);
         opacity: 0;
         transition: opacity 0.3s ease;
       }
 
       .result-box:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.15);
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: var(--shadow-md), var(--shadow-glow);
         border-color: var(--primary);
       }
 
@@ -343,25 +399,30 @@
       }
 
       .result-box.final {
-        background: var(--primary);
+        background: #8fbc8f;
+        color: black;
         border: none;
         padding: 24px;
         transform: scale(1.02);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        transition: all 0.3s ease-in-out;
+        box-shadow: 0 10px 30px rgba(143, 188, 143, 0.4),
+                    0 0 40px rgba(143, 188, 143, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
       }
 
       .result-box.final .result-label {
-        color: rgba(255, 255, 255, 0.9);
+        color: rgba(0, 0, 0, 0.7);
         font-size: 13px;
       }
 
       .result-box.final .result-value {
-        color: white;
+        color: black;
         font-size: 32px;
         font-weight: 800;
         font-family: "Montserrat", sans-serif;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
       }
 
       .result-box.final::before {
@@ -369,8 +430,10 @@
       }
 
       .result-box.final:hover {
-        transform: scale(1.05);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        transform: scale(1.06) translateY(-4px);
+        box-shadow: 0 15px 40px rgba(143, 188, 143, 0.5),
+                    0 0 60px rgba(143, 188, 143, 0.4),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.3);
       }
 
       .actions {
@@ -383,16 +446,16 @@
       }
 
       button {
-        background: var(--primary);
-        color: white;
+        background: transparent;
+        color: var(--primary);
         padding: 12px 24px;
         border-radius: 12px;
-        border: none;
+        border: 2px solid var(--primary);
         cursor: pointer;
         font-weight: 700;
         font-size: 14px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: none;
         position: relative;
         overflow: hidden;
       }
@@ -418,26 +481,31 @@
       }
 
       button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        background: var(--primary);
+        color: white;
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: var(--shadow-md);
       }
 
       button:active {
         transform: translateY(0) scale(0.98);
-        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        box-shadow: var(--shadow-sm);
+        background: var(--primary-dark);
+        color: white;
       }
 
       button.secondary {
-        background: var(--card-bg);
+        background: transparent;
         color: var(--primary);
         border: 2px solid var(--primary);
         box-shadow: none;
       }
 
       button.secondary:hover {
-        background: var(--primary-light);
+        background: var(--primary);
         color: white;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        border-color: transparent;
+        box-shadow: var(--shadow-sm);
       }
 
       button.small {
@@ -517,9 +585,12 @@
         font-size: 14px;
         color: var(--text-secondary);
         padding: 16px;
-        background: rgba(255, 255, 255, 0.7);
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
         border-radius: 16px;
-        backdrop-filter: blur(10px);
+        box-shadow: var(--shadow-sm);
         animation: fadeInUp 0.6s ease-out 0.2s both;
       }
 
@@ -619,6 +690,88 @@
       }
       #final-price-breakdown td:last-child {
         text-align: right;
+      }
+
+      /* Custom Legend Styles */
+      .custom-legend {
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+      }
+
+      .legend-item {
+        background: var(--input-bg);
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        transition: transform 0.2s;
+      }
+
+      .legend-item:hover {
+        transform: translateY(-2px);
+        border-color: var(--primary);
+      }
+
+      .legend-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #374151; /* Explicit dark gray for light mode */
+      }
+
+      .dark-mode .legend-header {
+        color: #e5e7eb;
+      }
+
+      .legend-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+
+      .legend-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font-size: 14px;
+      }
+
+      .legend-value {
+        font-weight: 700;
+        font-family: "Montserrat", sans-serif;
+        color: #111827; /* Explicit almost black for light mode */
+      }
+
+      .dark-mode .legend-value {
+        color: #f3f4f6;
+      }
+
+      .legend-percent {
+        font-size: 12px;
+        color: var(--text-secondary);
+        background: var(--card-bg);
+        padding: 2px 8px;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+      }
+
+      .progress-bar {
+        height: 6px;
+        background: var(--border-color);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.5s ease-out;
       }
 
       @media print {
@@ -833,6 +986,8 @@
               <div class="chart-container">
                 <canvas id="cost-breakdown-chart"></canvas>
               </div>
+              <!-- Custom Legend Container -->
+              <div id="chart-custom-legend" class="custom-legend"></div>
               <div id="final-price-breakdown">
                 <!-- Calculation breakdown will be injected here -->
               </div>
@@ -861,6 +1016,11 @@
           body.classList.remove("dark-mode");
           themeToggle.innerText = "🌙";
           themeToggle.title = "Switch to dark mode";
+        }
+        
+        // Update chart if it exists to apply new theme colors
+        if (typeof costChart !== "undefined" && costChart) {
+          calculate();
         }
       }
 
@@ -1088,12 +1248,12 @@
                 data.gstAmt,
               ],
               backgroundColor: [
-                "#4CAF50", // Green
-                "#2196F3", // Blue
-                "#FFC107", // Amber
-                "#9C27B0", // Purple
-                "#FF5722", // Deep Orange
-                "#E91E63", // Pink
+                "#10b981", // Emerald - Purchase
+                "#3b82f6", // Blue - Shipping
+                "#8b5cf6", // Purple - Referral
+                "#f59e0b", // Amber - Packaging
+                "#ec4899", // Pink - Profit
+                "#06b6d4", // Cyan - GST
               ],
               borderColor: isDarkMode ? "#1e1e1e" : "#ffffff",
               borderWidth: 2,
@@ -1108,13 +1268,15 @@
             legend: {
               position: "bottom",
               labels: {
-                color: textColor,
+                color: isDarkMode ? "#e5e7eb" : "#374151",
                 font: {
                   family: "'Lato', sans-serif",
                   size: 12,
+                  weight: "bold"
                 },
-                padding: 12,
+                padding: 20,
                 usePointStyle: true,
+                pointStyle: "circle"
               },
             },
             tooltip: {
@@ -1141,13 +1303,27 @@
                 );
                 const percentage = (value / total) * 100;
                 // Hide label if percentage is too small to avoid clutter
-                if (percentage < 4) {
+                if (percentage < 3) {
                   return "";
                 }
-                return percentage.toFixed(1) + "%";
+                const label = ctx.chart.data.labels[ctx.dataIndex];
+                return label + "\n" + percentage.toFixed(1) + "%";
               },
               color: "#fff",
-              font: { weight: "bold", size: 12 },
+              font: { 
+                weight: "bold", 
+                size: 12,
+                lineHeight: 1.3
+              },
+              textAlign: "center",
+              anchor: "center",
+              align: "center",
+              offset: 0,
+              borderRadius: 4,
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
+              padding: 8,
+              textStrokeColor: "#000",
+              textStrokeWidth: 2,
             },
           },
           layout: {
@@ -1163,24 +1339,74 @@
         };
 
         try {
+          // Destroy existing chart to ensure clean state and proper plugin loading
           if (costChart) {
-            // Update existing chart
-            costChart.data = chartData;
-            costChart.options.plugins.legend.labels.color = textColor;
-            costChart.options.maintainAspectRatio = false;
-            costChart.options.borderColor = isDarkMode ? "#1e1e1e" : "#ffffff";
-            costChart.update("active");
-          } else {
-            // Create new chart
-            costChart = new Chart(ctx, {
-              type: "doughnut",
-              data: chartData,
-              options: chartOptions,
-            });
+            costChart.destroy();
           }
+
+          // Create new chart
+          const chartConfig = {
+            type: "doughnut",
+            data: chartData,
+            options: chartOptions,
+          };
+          
+          // Add datalabels plugin if available
+          if (typeof ChartDataLabels !== "undefined") {
+            // Disable default labels as we have custom legend now
+            chartConfig.plugins = [ChartDataLabels];
+            chartConfig.options.plugins.datalabels = { display: false };
+          } else {
+            console.warn("ChartDataLabels plugin not found");
+          }
+          
+          costChart = new Chart(ctx, chartConfig);
+          
+          // Update custom legend
+          updateCustomLegend(chartData);
+          
         } catch (error) {
           console.error("Error updating chart:", error);
         }
+      }
+
+      function updateCustomLegend(data) {
+        const container = document.getElementById("chart-custom-legend");
+        if (!container) return;
+
+        const labels = data.labels;
+        const values = data.datasets[0].data;
+        const colors = data.datasets[0].backgroundColor;
+        const total = values.reduce((a, b) => a + b, 0);
+
+        let html = "";
+        
+        labels.forEach((label, index) => {
+          const value = values[index];
+          const color = colors[index];
+          const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : "0.0";
+          
+          // Skip if value is 0
+          if (value <= 0) return;
+
+          html += `
+            <div class="legend-item">
+              <div class="legend-header">
+                <div class="legend-color" style="background-color: ${color}"></div>
+                <span>${label}</span>
+              </div>
+              <div class="legend-details">
+                <span class="legend-value">₹ ${fmt(value)}</span>
+                <span class="legend-percent">${percentage}%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${percentage}%; background-color: ${color}"></div>
+              </div>
+            </div>
+          `;
+        });
+
+        container.innerHTML = html;
       }
 
       function resetPreviousResults() {
